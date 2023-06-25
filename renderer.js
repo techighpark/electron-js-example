@@ -1,9 +1,9 @@
 console.group('renderer.js')
 
 /* 
-|------------------------------------------------
+|------------------------------------------------------------------------------------------------
 | Theme mode
-|------------------------------------------------
+|------------------------------------------------------------------------------------------------
  */
 document.getElementById('toggle-dark-mode').addEventListener('click', async () => {
     const isDarkMode = await window.darkMode.toggle()
@@ -12,9 +12,9 @@ document.getElementById('toggle-dark-mode').addEventListener('click', async () =
 })
 
 /* 
-|------------------------------------------------------------------
+|------------------------------------------------------------------------------------------------
 |
-|------------------------------------------------------------------
+|------------------------------------------------------------------------------------------------
  */
 document.getElementById('reset-to-system').addEventListener('click', async () => {
     await window.darkMode.system()
@@ -22,17 +22,17 @@ document.getElementById('reset-to-system').addEventListener('click', async () =>
 })
 
 /* 
-|------------------------------------------------------------------
+|------------------------------------------------------------------------------------------------
 |
-|------------------------------------------------------------------
+|------------------------------------------------------------------------------------------------
  */
 const information = document.getElementById('info')
 information.innerText = `This app is using Chrome (v${window.versions.chrome()}), Node.js (v${window.versions.node()}), and Electron (v${window.versions.electron()})`
 
 /* 
-|------------------------------------------------------------------
+|------------------------------------------------------------------------------------------------
 |
-|------------------------------------------------------------------
+|------------------------------------------------------------------------------------------------
  */
 /**
  * @function pingpong-test
@@ -54,7 +54,7 @@ func()
 */
 const setButton = document.getElementById('btn')
 const titleInput = document.getElementById('title')
-setButton.addEventListener('click', () => {
+setButton.addEventListener('click', async () => {
     const title = titleInput.value
     window.exposeSetTitle.setTitle(title)
 })
@@ -65,13 +65,31 @@ setButton.addEventListener('click', () => {
 | ipcRenderer.invoke
 |------------------------------------------------------------------------------------------------
 */
-
 const btn = document.getElementById('btn-invoke')
 const filePathElement = document.getElementById('filePath')
-
 btn.addEventListener('click', async () => {
     const filePath = await window.electronAPI.openFile()
     filePathElement.innerText = filePath
 })
+
+
+/* 
+|------------------------------------------------------------------------------------------------
+| 
+|------------------------------------------------------------------------------------------------
+| [4] 
+| execute
+| [5]
+| event.sender.send >> ipcMain
+|
+*/
+window.electronAPISDev.handleCounter((event, value) => {
+    const oldValue = Number(counter.innerText)
+    const newValue = oldValue + value
+    counter.innerText = newValue
+    event.sender.send('counter-value', newValue)
+})
+
+
 
 console.groupEnd('renderer.js')
